@@ -5,9 +5,9 @@
 <section id="resumo" class="view active"><h1 class="head">Visão geral</h1><p class="desc">Consulte solicitações reais recebidas pelo site. As demais funções serão conectadas por etapas.</p><div class="grid" id="stats"></div><div class="card"><h3>Solicitações de clientes</h3><div id="requests" class="stack"></div></div><div class="card"><h3>Ordens de serviço recebidas</h3><div id="orders" class="stack"></div></div></section>
 <section id="pecas" class="view"><h1 class="head">Lançamento de peças para venda</h1><p class="desc">Cadastro de produtos: integração com Supabase pendente.</p><div class="card"><h3>Cadastrar nova peça</h3><form id="pieceForm" class="fields"><div><label>Nome da peça *</label><input name="nome" required placeholder="Ex.: Filtro de óleo"></div><div><label>Categoria</label><select name="categoria"><option>Filtros</option><option>Óleos e fluidos</option><option>Freios</option><option>Suspensão</option><option>Elétrica</option><option>Outros</option></select></div><div><label>Preço (R$) *</label><input name="preco" type="number" min="0" step=".01" required></div><div><label>Quantidade em estoque</label><input name="estoque" type="number" min="0" value="1"></div><div class="full"><label>Descrição da peça</label><textarea name="descricao" placeholder="Aplicação, marca, detalhes..."></textarea></div><div class="full"><label>Foto da peça</label><input type="file" id="piecePhoto" accept="image/*"><p class="muted mini">Cadastro de produtos será ativado após a integração da gestão.</p></div><div class="full"><button class="btn" type="submit">+ Cadastrar peça</button></div></form></div><div class="card"><h3>Peças cadastradas</h3><div id="piecesList"></div></div></section>
 <section id="clientes" class="view"><h1 class="head">Ficha completa do cliente</h1><p class="desc">Pesquise pelo nome, CPF ou placa para consultar a solicitação, o checklist da oficina e o andamento do veículo.</p><div class="card"><label>Pesquisar cliente</label><input id="clientSearch" placeholder="Ex.: Camila ou ABC1D23" autocomplete="off"><div id="clientResults"></div></div><div id="clientDetails" class="hidden"></div></section>
-<section id="orcamentos" class="view"><h1 class="head">Envio de orçamento</h1><p class="desc">Área em preparação. O envio de orçamentos ainda não está conectado ao cliente.</p><div class="card"><h3>Preparar orçamento</h3><form id="budgetForm" class="fields"><div><label>Cliente *</label><select name="cpf" id="budgetClient" required></select></div><div><label>Veículo / placa</label><input id="budgetVehicle" readonly placeholder="Preenchido ao selecionar o cliente"></div><div class="full"><label>Serviços e peças do orçamento *</label><textarea name="descricao" required placeholder="Descreva serviços, peças e quantidades..."></textarea></div><div><label>Peças (R$)</label><input name="pecas" type="number" step=".01" min="0" value="0"></div><div><label>Mão de obra (R$)</label><input name="mao" type="number" step=".01" min="0" value="0"></div><div><label>Tipo de orçamento</label><select name="tipo"><option value="inicial">Inicial</option><option value="complementar">Complementar — defeito oculto</option><option value="alternativo">Alternativo — opção econômica</option></select></div><div><label>Marca / qualidade da peça</label><input name="marca" placeholder="Marca recomendada ou peça genuína"></div><div class="full"><label>Motivo técnico / defeito adicional</label><textarea name="motivo" placeholder="Explique o defeito, por que a peça precisa ser trocada e o que foi identificado após a desmontagem"></textarea></div><div class="notice full">Orçamentos complementares precisam de autorização específica do cliente antes da execução. Fotos e vídeos serão vinculados à ordem de serviço na integração com o mecânico.</div><div class="full"><button class="btn" type="submit">Salvar orçamento</button></div></form></div><div class="card"><h3>Orçamentos cadastrados</h3><div id="budgetsList"></div></div></section>
+<section id="orcamentos" class="view"><h1 class="head">Envio de orçamento</h1><p class="desc">Orçamentos enviados aparecem na Área do Cliente para aprovação ou recusa.</p><div class="card"><h3>Preparar orçamento</h3><form id="budgetForm" class="fields"><div><label>Cliente *</label><select name="cpf" id="budgetClient" required></select></div><div><label>Solicitação / veículo *</label><select id="budgetRequest" required><option value="">Selecione uma solicitação</option></select></div><div><label>Veículo / placa</label><input id="budgetVehicle" readonly placeholder="Preenchido ao selecionar o cliente"></div><div class="full"><label>Serviços e peças do orçamento *</label><textarea name="descricao" required placeholder="Descreva serviços, peças e quantidades..."></textarea></div><div><label>Peças (R$)</label><input name="pecas" type="number" step=".01" min="0" value="0"></div><div><label>Mão de obra (R$)</label><input name="mao" type="number" step=".01" min="0" value="0"></div><div><label>Tipo de orçamento</label><select name="tipo"><option value="inicial">Inicial</option><option value="complementar">Complementar — defeito oculto</option><option value="alternativo">Alternativo — opção econômica</option></select></div><div><label>Marca / qualidade da peça</label><input name="marca" placeholder="Marca recomendada ou peça genuína"></div><div class="full"><label>Motivo técnico / defeito adicional</label><textarea name="motivo" placeholder="Explique o defeito, por que a peça precisa ser trocada e o que foi identificado após a desmontagem"></textarea></div><div class="notice full">Orçamentos complementares precisam de autorização específica do cliente antes da execução. Fotos e vídeos serão vinculados à ordem de serviço na integração com o mecânico.</div><div class="full"><button class="btn" type="submit">Salvar e enviar orçamento para a Área do Cliente</button><p class="muted mini" id="budgetFeedback"></p></div></form></div><div class="card"><h3>Orçamentos cadastrados</h3><div id="budgetsList"></div></div></section>
 
-<section id="encomendas" class="view"><h1 class="head">Peças sob encomenda</h1><p class="desc">Área em preparação. O controle de encomendas ainda não está conectado ao Supabase.</p><div class="card"><h3>Nova encomenda</h3><form id="specialForm" class="fields"><div><label>Cliente *</label><input name="cliente" required></div><div><label>WhatsApp do cliente</label><input name="telefone" placeholder="DDD + número"></div><div><label>Veículo / placa</label><input name="veiculo"></div><div><label>Peça sob encomenda *</label><input name="peca" required></div><div><label>Valor total (R$) *</label><input name="total" type="number" min="0" step=".01" required></div><div><label>Sinal antecipado (R$) *</label><input name="sinal" type="number" min="0" step=".01" required></div><div><label>Previsão de chegada</label><input name="previsao" type="date"></div><div><label>Status</label><select name="status"><option>Aguardando sinal</option><option>Encomendada</option><option>Recebida</option><option>Entregue</option><option>Cancelada</option></select></div><div class="full"><label>Observações / condições da encomenda</label><textarea name="observacoes"></textarea></div><div class="full"><button class="btn">Salvar encomenda</button></div></form></div><div class="card"><h3>Encomendas cadastradas</h3><div id="specialList"></div></div></section>
+<section id="encomendas" class="view"><h1 class="head">Peças sob encomenda</h1><p class="desc">Selecione um cliente cadastrado, registre a peça e acompanhe cada mudança de status. O aviso é preparado no WhatsApp para envio pela Leninha.</p><div class="card"><h3>Nova encomenda</h3><form id="specialForm" class="fields"><div><label>Cliente cadastrado *</label><select name="cliente_id" id="specialClient" required><option value="">Selecione o cliente</option></select></div><div><label>WhatsApp do cliente</label><input name="telefone" id="specialPhone" readonly placeholder="Preenchido pelo cadastro"></div><div><label>Veículo / placa</label><select name="veiculo_id" id="specialVehicle"><option value="">Selecione o veículo</option></select></div><div><label>Peça sob encomenda *</label><input name="peca" required></div><div><label>Valor total (R$) *</label><input name="total" type="number" min="0" step=".01" required></div><div><label>Sinal antecipado (R$) *</label><input name="sinal" type="number" min="0" step=".01" required></div><div><label>Previsão de chegada</label><input name="previsao" type="date"></div><div><label>Status</label><select name="status"><option>Aguardando sinal</option><option>Encomendada</option><option>Em transporte</option><option>Recebida</option><option>Pronta para retirada</option><option>Entregue</option><option>Cancelada</option></select></div><div class="full"><label>Observações / condições da encomenda</label><textarea name="observacoes"></textarea></div><div class="full"><button class="btn">Salvar encomenda</button></div></form></div><div class="card"><h3>Encomendas cadastradas</h3><p class="muted mini" id="specialFeedback"></p><div id="specialList"></div></div></section>
 <section id="mensagens" class="view"><h1 class="head">Mensagens e políticas da oficina</h1><p class="desc">Modelos aprováveis pela Leninha. Preencha o cliente, escolha o texto e envie pelo WhatsApp.</p><div class="card fields"><div><label>Cliente cadastrado</label><select id="msgClient"><option value="">Selecione um cliente cadastrado</option></select><p class="muted mini" id="msgClientStatus">Faça login para carregar os clientes.</p></div><div><label>Nome do cliente</label><input id="msgName" placeholder="Preenchido automaticamente"></div><div><label>WhatsApp (DDD + número)</label><input id="msgPhone" placeholder="64999999999"></div><div class="full"><label>Modelo de mensagem</label><select id="msgTemplate"><option value="cadastro">Cadastro e política financeira</option><option value="pecas">Qualidade das peças e opções de orçamento</option><option value="pagamento">Política de pagamento — sem fiado</option><option value="alteracao">Aviso de orçamento complementar</option><option value="horario">Horários de entrega e retirada</option><option value="encomenda">Peça sob encomenda e sinal</option><option value="retirada">Veículo pronto para retirada</option></select></div><div class="full"><label>Texto editável antes de enviar</label><textarea id="msgBody" style="min-height:260px"></textarea></div><div class="full row" style="justify-content:flex-start"><button class="btn" type="button" onclick="openTemplateWhatsapp()">Abrir no WhatsApp</button><button class="btn alt" type="button" onclick="copyTemplate()">Copiar texto</button></div></div><div class="card"><h3>Regras da oficina</h3><div class="stack"><div class="notice">Pagamento à vista. Liberação de veículo e peças somente após confirmação/compensação. A primeira mensagem menciona boleto; confirme com a Leninha se ainda aceita antes de habilitar.</div><div class="notice">Retirada/entrega: 08h–11h e 13h–17h50, em dias úteis de funcionamento a confirmar.</div><div class="notice">Defeitos ocultos: registrar fotos/vídeos, enviar orçamento complementar e aguardar autorização específica do cliente.</div><div class="notice">Peças alternativas: informar marca, diferenças técnicas e eventual mudança de garantia antes da aprovação.</div></div></div></section>
 </main>
 <script>
@@ -18,12 +18,13 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 
-let selected=null; let serverClients=[]; let serverRequests=[]; let adminReady=false;
+let selected=null; let serverClients=[]; let serverRequests=[]; let serverVehicles=[]; let adminReady=false;
 function requests(){return serverRequests}
 function clients(){return serverClients}
-function findOs(r){return read(key.os).filter(o=>o.cpf&&r.cpf?norm(o.cpf.replace(/\D/g,''))===norm(r.cpf.replace(/\D/g,'')):o.placa&&r.placa&&norm(o.placa)===norm(r.placa))}
-function findBud(r){return read(key.bud).filter(o=>o.cpf&&r.cpf&&o.cpf.replace(/\D/g,'')===r.cpf.replace(/\D/g,''))}
-function refresh(){let req=requests(),os=read(key.os),bud=read(key.bud),pcs=read(key.pieces);document.getElementById('stats').innerHTML=[['Solicitações',req.length],['O.S. da oficina',os.length],['Orçamentos',bud.length],['Peças cadastradas',pcs.length]].map(([k,v])=>`<div class="card"><div class="muted">${k}</div><div class="big">${v}</div></div>`).join('');document.getElementById('requests').innerHTML=req.length?req.map(r=>`<div class="line"><strong>${esc(r.nome||r.cliente)} • ${esc(r.modelo)}</strong><div class="muted">Placa: ${esc(r.placa)} | Data desejada: ${esc(r.dataDesejada||r.data||'Não informada')} | ${esc(r.status||'Aguardando análise')}</div><div>${esc(r.problema||r.queixa)}</div></div>`).join(''):'Nenhuma solicitação encontrada no Supabase.';document.getElementById('orders').innerHTML=os.length?os.map(r=>`<div class="line"><strong>${esc(r.cliente||r.nome)} • ${esc(r.placa)}</strong><div class="muted">O.S. ${esc(r.os||r.id||'—')} • ${esc(r.modelo)}</div></div>`).join(''):'Nenhuma O.S. cadastrada nesta versão.';renderPieces();renderClients();renderBudgetClients();renderBudgets();renderSpecial()}
+let serverOrders=[],serverBudgets=[],serverChecks=[],serverMedia=[];
+function findOs(r){return serverOrders.filter(o=>o.cliente_id===r.cliente_id)}
+function findBud(r){return serverBudgets.filter(b=>serverOrders.some(o=>o.id===b.ordem_id&&o.cliente_id===r.cliente_id))}
+function refresh(){let req=requests(),os=serverOrders,bud=serverBudgets,pcs=read(key.pieces);document.getElementById('stats').innerHTML=[['Solicitações',req.length],['O.S. da oficina',os.length],['Orçamentos',bud.length],['Peças cadastradas',pcs.length]].map(([k,v])=>`<div class="card"><div class="muted">${k}</div><div class="big">${v}</div></div>`).join('');document.getElementById('requests').innerHTML=req.length?req.map(r=>`<div class="line"><strong>${esc(r.nome||r.cliente)} • ${esc(r.modelo)}</strong><div class="muted">Placa: ${esc(r.placa)} | Data desejada: ${esc(r.dataDesejada||r.data||'Não informada')} | ${esc(r.status||'Aguardando análise')}</div><div>${esc(r.problema||r.queixa)}</div></div>`).join(''):'Nenhuma solicitação encontrada no Supabase.';document.getElementById('orders').innerHTML=os.length?os.map(r=>`<div class="line"><strong>${esc(r.cliente||r.nome)} • ${esc(r.placa)}</strong><div class="muted">O.S. ${esc(r.os||r.id||'—')} • ${esc(r.modelo)}</div></div>`).join(''):'Nenhuma O.S. cadastrada nesta versão.';renderPieces();renderClients();renderBudgetClients();renderBudgets();renderSpecial()}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));window.scrollTo(0,0)});
 function renderPieces(){let pcs=read(key.pieces);document.getElementById('piecesList').innerHTML=pcs.length?`<div class="tablewrap"><table><thead><tr><th>Foto</th><th>Peça</th><th>Preço</th><th>Estoque</th><th></th></tr></thead><tbody>${pcs.map(p=>`<tr><td>${p.foto?`<img class="thumb" src="${p.foto}" alt="">`:'📦'}</td><td><strong>${esc(p.nome)}</strong><div class="muted mini">${esc(p.categoria)}</div></td><td>${money(p.preco)}</td><td>${esc(p.estoque)}</td><td><button class="btn alt small" onclick="deletePiece('${p.id}')">Excluir</button></td></tr>`).join('')}</tbody></table></div>`:'Nenhuma peça cadastrada.'}
 function deletePiece(id){if(confirm('Excluir esta peça do catálogo?')){save(key.pieces,read(key.pieces).filter(p=>p.id!==id));refresh()}}
@@ -31,15 +32,56 @@ document.getElementById('pieceForm').onsubmit=async e=>{e.preventDefault();alert
 
 document.getElementById('clientSearch').oninput=renderClients;
 function renderClients(){let q=norm(document.getElementById('clientSearch').value),list=clients().filter(r=>!q||[r.nome,r.cpf,r.placa,r.modelo].some(v=>norm(v).includes(q)));document.getElementById('clientResults').innerHTML=list.length?list.map((r,i)=>`<button class="result" onclick="selectClient(${i})"><strong>${esc(r.nome)}</strong><small>${esc(r.modelo)} • ${esc(r.placa)} • CPF final ${esc(String(r.cpf||'').slice(-3))}</small></button>`).join(''):'<p class="muted">Nenhum cliente cadastrado encontrado.</p>';window.visibleClients=list}
-function selectClient(i){selected=window.visibleClients[i];if(!selected)return;let r=selected,oss=findOs(r),bud=findBud(r),fields=[['Nome',r.nome],['CPF',r.cpf],['WhatsApp',r.telefone],['Modelo',r.modelo],['Ano',r.ano],['Placa',r.placa],['Chassi',r.chassi],['Defeito relatado',r.problema||r.queixa],['Quando ocorre',r.quando],['Luzes do painel',r.luzes],['Manutenções informadas',(r.manutencao||r.historico||[]).join(', ')],['Data desejada',r.data||r.dataDesejada],['Situação',r.status||'Solicitação recebida']];document.getElementById('clientDetails').classList.remove('hidden');document.getElementById('clientDetails').innerHTML=`<div class="card"><div class="row"><h3>Ficha de ${esc(r.nome)}</h3><button class="btn" onclick="prepareBudget()">Criar orçamento para este cliente</button></div><div class="grid">${fields.map(([k,v])=>`<div><div class="muted mini">${k}</div><strong>${esc(v||'Não informado')}</strong></div>`).join('')}</div><hr class="divider"><h3>Registros da oficina / O.S.</h3>${oss.length?oss.map(o=>`<div class="line">${Object.entries(o).filter(([k,v])=>v!==''&&v!==null&&typeof v!=='object').map(([k,v])=>`<div><span class="muted">${esc(k)}:</span> ${esc(v)}</div>`).join('')}</div>`).join(''):'<p class="muted">Ainda não existe O.S. vinculada a este cliente.</p>'}<hr class="divider"><h3>Orçamentos</h3>${bud.length?bud.map(b=>`<div class="line">${esc(b.descricao)} — ${money(Number(b.pecas||0)+Number(b.mao||0))} — ${esc(b.status||'Aguardando envio')}</div>`).join(''):'<p class="muted">Nenhum orçamento cadastrado.</p>'}</div>`;document.getElementById('clientDetails').scrollIntoView({block:'start',behavior:'smooth'})}
+function selectClient(i){
+ selected=window.visibleClients[i];if(!selected)return;
+ const r=selected,oss=findOs(r),bud=findBud(r),requestsForClient=serverRequests.filter(x=>x.cliente_id===r.cliente_id);
+ const allVehicles=serverVehicles.filter(v=>v.cliente_id===r.cliente_id);
+ const fields=[['Nome',r.nome],['CPF',r.cpf],['WhatsApp',r.telefone],['E-mail',r.email]];
+ const lines=xs=>xs.length?xs.join(''):'<p class="muted">Nenhum registro ainda.</p>';
+ const card=(title,body)=>`<div class="card"><h3>${title}</h3>${body}</div>`;
+ document.getElementById('clientDetails').classList.remove('hidden');
+ document.getElementById('clientDetails').innerHTML=card('Cadastro completo — '+esc(r.nome),`<div class="row"><button class="btn" onclick="prepareBudget()">Criar orçamento para este cliente</button></div><div class="grid">${fields.map(([k,v])=>`<div><div class="muted mini">${k}</div><strong>${esc(v||'Não informado')}</strong></div>`).join('')}</div>`)
+ +card('Veículos',lines(allVehicles.map(v=>`<div class="line"><strong>${esc(v.modelo)} · ${esc(v.placa)}</strong><div class="muted mini">Ano: ${esc(v.ano)} · Chassi: ${esc(v.chassi)} · KM: ${esc(v.quilometragem)}</div></div>`)))
+ +card('Solicitações e agendamentos',lines(requestsForClient.map(x=>`<div class="line"><strong>${esc(x.status)} · ${esc(x.placa||'')}</strong><p>${esc(x.descricao)}</p><div class="muted mini">Data solicitada: ${esc(x.data_preferida||'Não informada')} · ${esc(x.criado_em||'')}</div></div>`)))
+ +card('Ordens de serviço',lines(oss.map(o=>`<div class="line"><strong>OS nº ${esc(o.numero)} · ${esc(o.status)}</strong><p>${esc(o.queixa_cliente||'')}</p><div class="muted mini">${esc(o.observacoes_cliente||'')}</div></div>`)))
+ +card('Checklists da oficina',lines(serverChecks.filter(c=>oss.some(o=>o.id===c.ordem_id)).map(c=>`<div class="line"><strong>${esc(c.etapa)}</strong><p>${esc(c.observacoes||'')}</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(JSON.stringify(c.respostas||{},null,2))}</pre></div>`)))
+ +card('Fotos e vídeos registrados',lines(serverMedia.filter(m=>oss.some(o=>o.id===m.ordem_id)).map(m=>`<div class="line"><strong>${esc(m.etapa)} · ${esc(m.tipo)}</strong><p>${esc(m.descricao||'')}</p><div class="muted mini">Arquivo: ${esc(m.caminho_storage)} · Cliente: ${m.visivel_cliente?'Liberado':'Privado'}</div></div>`)))
+ +card('Orçamentos e peças utilizadas',lines(bud.map(b=>`<div class="line"><strong>${esc(b.tipo)} · ${esc(b.status)} · ${money(Number(b.valor_pecas)+Number(b.valor_mao_obra))}</strong><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(JSON.stringify(b.itens||[],null,2))}</pre><div class="muted mini">Enviado: ${esc(b.enviado_em||'—')} · Resposta: ${esc(b.respondido_em||'—')}</div></div>`)));
+ document.getElementById('clientDetails').scrollIntoView({block:'start',behavior:'smooth'});
+}
 function prepareBudget(){document.querySelector('[data-tab="orcamentos"]').click();let sel=document.getElementById('budgetClient');sel.value=selected.cpf||'';sel.dispatchEvent(new Event('change'))}
 function renderBudgetClients(){let sel=document.getElementById('budgetClient'),old=sel.value;sel.innerHTML='<option value="">Selecione o cliente</option>'+clients().filter(r=>r.cpf).map(r=>`<option value="${esc(r.cpf)}">${esc(r.nome)} — ${esc(r.placa)}</option>`).join('');sel.value=old;fillVehicle()}
-function fillVehicle(){let c=clients().find(r=>r.cpf===document.getElementById('budgetClient').value);document.getElementById('budgetVehicle').value=c?[c.modelo,c.placa].filter(Boolean).join(' • '):''}
+function fillVehicle(){let c=clients().find(r=>r.cpf===document.getElementById('budgetClient').value);document.getElementById('budgetVehicle').value=c?[c.modelo,c.placa].filter(Boolean).join(' • '):'';const el=document.getElementById('budgetRequest');el.innerHTML='<option value="">Selecione uma solicitação</option>'+serverRequests.filter(r=>r.cpf===document.getElementById('budgetClient').value).map(r=>`<option value="${esc(r.id)}">${esc(r.placa)} · ${esc(r.descricao).slice(0,60)}</option>`).join('');}
 document.getElementById('budgetClient').onchange=fillVehicle;
-document.getElementById('budgetForm').onsubmit=e=>{e.preventDefault();alert('O envio de orçamentos ao cliente ainda será conectado ao Supabase. Nenhum orçamento foi publicado.');return;let d=Object.fromEntries(new FormData(e.target).entries());let c=clients().find(r=>r.cpf===d.cpf);d.id='orc_'+Date.now();d.nome=c?.nome||'';d.telefone=c?.telefone||'';d.modelo=c?.modelo||'';d.placa=c?.placa||'';d.status='Aguardando envio';d.criadoEm=new Date().toLocaleString('pt-BR');let a=read(key.bud);a.push(d);save(key.bud,a);e.target.reset();refresh();alert('Orçamento salvo. Clique em “Enviar pelo WhatsApp” na lista abaixo.')};
-function renderBudgets(){let a=read(key.bud);document.getElementById('budgetsList').innerHTML=a.length?a.slice().reverse().map(b=>`<div class="card"><div class="row"><div><strong>${esc(b.nome||b.cpf)} • ${esc(b.modelo||b.placa)}</strong><div class="muted mini">${esc(b.criadoEm||'')} • ${esc(b.status||'Pendente')}</div></div><span class="chip">${money(Number(b.pecas||0)+Number(b.mao||0))}</span></div><p>${esc(b.descricao)}</p><div class="muted mini">${esc(b.tipo||'inicial')} • Marca: ${esc(b.marca||'não informada')}</div>${b.motivo?`<p class="notice">${esc(b.motivo)}</p>`:''}<p class="muted mini">O orçamento pode mudar após desmontagem. Qualquer serviço adicional requer nova autorização.</p><button class="btn" onclick="sendBudget('${esc(b.id)}')">📲 Enviar orçamento pelo WhatsApp</button></div>`).join(''):'Nenhum orçamento cadastrado.'}
-function sendBudget(id){let a=read(key.bud),b=a.find(x=>x.id===id);if(!b)return;let msg=`Olá, ${b.nome||'cliente'}! 🚗💚\n\nSeu orçamento ${b.tipo==='complementar'?'COMPLEMENTAR':b.tipo==='alternativo'?'ALTERNATIVO':'INICIAL'} da Revisa Auto Car foi preparado.\n\n${b.descricao}\nPeças: ${money(b.pecas)}\nMão de obra: ${money(b.mao)}\nTotal: ${money(Number(b.pecas||0)+Number(b.mao||0))}\n\n${b.motivo||''}\n\nO orçamento pode sofrer alterações após desmontagem, caso sejam encontrados defeitos ocultos. Nenhum serviço adicional será executado sem sua autorização.\n\n\n\nEntre na Área do Cliente do nosso site para conferir os serviços e valores e registrar sua aprovação ou reprovação.\n\n⚠️ Após confirmar sua decisão, não será possível alterá-la pelo sistema.\n\nRevisa Auto Car`;let phone=String(b.telefone||'').replace(/\D/g,'');if(phone.length===10||phone.length===11)phone='55'+phone;if(phone.length<12){navigator.clipboard?.writeText(msg).catch(()=>{});alert('Este cliente não tem um WhatsApp válido cadastrado. A mensagem foi preparada; confira o telefone antes de enviar.');return}let link='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);window.open(link,'_blank','noopener');b.status='Mensagem preparada no WhatsApp';save(key.bud,a);refresh()}
-
+document.getElementById('budgetForm').onsubmit=async e=>{
+ e.preventDefault();const feedback=document.getElementById('budgetFeedback');feedback.textContent='Salvando orçamento...';
+ try{
+ const f=e.target,d=Object.fromEntries(new FormData(f).entries());
+ const req=serverRequests.find(r=>r.id===document.getElementById('budgetRequest').value&&r.cpf===d.cpf);
+ if(!req?.cliente_id||!req?.veiculo_id)throw Error('Selecione uma solicitação válida do cliente.');
+ if(d.tipo==='alternativo')d.tipo='inicial';
+ let os=serverOrders.find(o=>o.solicitacao_id===req.id);
+ if(!os){const {data,error}=await sb.from('ordens_servico').insert({cliente_id:req.cliente_id,veiculo_id:req.veiculo_id,solicitacao_id:req.id,status:'aguardando_aprovacao',queixa_cliente:req.descricao}).select().single();if(error)throw error;os=data;serverOrders.push(os)}
+ const itens=[{descricao:d.descricao,marca:d.marca||'',motivo:d.motivo||'',observacao:'O orçamento poderá sofrer alterações após a desmontagem; serviços adicionais exigem nova autorização.'}];
+ const {error}=await sb.from('orcamentos').insert({ordem_id:os.id,tipo:d.tipo,itens,valor_pecas:Number(d.pecas||0),valor_mao_obra:Number(d.mao||0),status:'enviado',enviado_em:new Date().toISOString()});if(error)throw error;
+ feedback.textContent='Orçamento enviado para a Área do Cliente!';f.reset();await loadAdminData();
+ }catch(err){feedback.textContent='Não foi possível salvar: '+(err.message||err)}
+};
+function renderBudgets(){
+ const el=document.getElementById('budgetsList');
+ el.innerHTML=serverBudgets.length?serverBudgets.map(b=>{
+ const os=serverOrders.find(o=>o.id===b.ordem_id),cl=serverClients.find(c=>c.cliente_id===os?.cliente_id);
+ return `<div class="line"><strong>${esc(cl?.nome||'Cliente')} · ${esc(b.tipo)} · ${esc(b.status)}</strong><div>${money(Number(b.valor_pecas)+Number(b.valor_mao_obra))}</div><p>${esc((b.itens||[]).map(i=>i.descricao).join('; '))}</p><button class="btn alt small" onclick="notifyBudget('${esc(b.id)}')">Avisar no WhatsApp</button></div>`
+ }).join(''):'Nenhum orçamento enviado.';
+}
+function notifyBudget(id){
+ const b=serverBudgets.find(x=>x.id===id),os=serverOrders.find(o=>o.id===b?.ordem_id),c=serverClients.find(x=>x.cliente_id===os?.cliente_id);
+ if(!b||!c)return;
+ let phone=String(c.telefone||'').replace(/\D/g,'');if(phone.length===10||phone.length===11)phone='55'+phone;
+ if(!/^\d{12,13}$/.test(phone)){alert('Confira o telefone do cliente.');return}
+ const msg=`Olá, ${c.nome}! Seu orçamento da Revisa Auto Car está disponível na Área do Cliente para consultar e aprovar ou recusar. Total: ${money(Number(b.valor_pecas)+Number(b.valor_mao_obra))}. Acesse: https://rhquiz.github.io/revisa-auto-car/`;
+ window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener');
+}
 const templates={
  cadastro:n=>`Olá, ${n}, tudo bem? Recebemos seus dados para cadastro na Revisa Auto Car. Nossa política financeira: após a aprovação do orçamento, a oficina providencia a emissão da nota fiscal. O pagamento é à vista e a liberação do veículo depende da confirmação/compensação. Durante o reparo, caso sejam encontrados defeitos ocultos, enviaremos fotos ou vídeos e solicitaremos sua autorização antes de qualquer serviço adicional. Estamos à disposição!`,
  pecas:n=>`Olá, ${n}! Na Revisa Auto Car selecionamos marcas conforme a aplicação de cada peça, priorizando segurança e durabilidade. Em alguns casos recomendamos peças genuínas. Se desejar, podemos preparar outra opção de orçamento com peças de menor custo, explicando diferenças de desempenho e durabilidade. Sua escolha será respeitada e orientada.`,
@@ -55,10 +97,80 @@ document.getElementById('msgName').oninput=refreshTemplate;
 function copyTemplate(){let t=document.getElementById('msgBody').value;navigator.clipboard?.writeText(t).then(()=>alert('Mensagem copiada!')).catch(()=>prompt('Copie a mensagem:',t))}
 function openTemplateWhatsapp(){let phone=document.getElementById('msgPhone').value.replace(/\D/g,'');if(phone.length===10||phone.length===11)phone='55'+phone;if(!/^\d{12,13}$/.test(phone)){alert('Informe o WhatsApp do cliente com DDD.');return}window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(document.getElementById('msgBody').value),'_blank','noopener')}
 refreshTemplate();
-document.getElementById('specialForm').onsubmit=e=>{e.preventDefault();alert('O registro de encomendas no Supabase ainda não está habilitado. Nenhuma encomenda foi publicada.');return;let d=Object.fromEntries(new FormData(e.target).entries());if(Number(d.sinal)>Number(d.total)){alert('O sinal não pode ultrapassar o valor total.');return}d.id='enc_'+Date.now();d.criadoEm=new Date().toLocaleString('pt-BR');save(key.special,[...read(key.special),d]);e.target.reset();renderSpecial();alert('Encomenda registrada localmente, ainda não publicada para outros aparelhos.')};
-function renderSpecial(){let el=document.getElementById('specialList'),a=read(key.special);el.innerHTML=a.length?a.slice().reverse().map(d=>`<div class="card"><div class="row"><strong>${esc(d.cliente)} — ${esc(d.peca)}</strong><span class="chip">${esc(d.status)}</span></div><div class="muted">${esc(d.veiculo)} • Total: ${money(d.total)} • Sinal: ${money(d.sinal)} • Saldo: ${money(Number(d.total)-Number(d.sinal))}</div><p>${esc(d.observacoes)}</p><button class="btn alt small" onclick="sendSpecial('${esc(d.id)}')">Preparar pedido de sinal no WhatsApp</button> <button class="btn alt small" onclick="changeSpecial('${esc(d.id)}')">Alterar status</button></div>`).join(''):'Nenhuma encomenda cadastrada.'}
-function sendSpecial(id){let d=read(key.special).find(x=>x.id===id);if(!d)return;document.querySelector('[data-tab="mensagens"]').click();document.getElementById('msgName').value=d.cliente;document.getElementById('msgPhone').value=d.telefone||'';document.getElementById('msgTemplate').value='encomenda';refreshTemplate();document.getElementById('msgBody').value=`Olá, ${d.cliente}! A peça ${d.peca} para ${d.veiculo||'seu veículo'} precisa ser encomendada. Valor total: ${money(d.total)}. Sinal antecipado: ${money(d.sinal)}. Saldo na retirada: ${money(Number(d.total)-Number(d.sinal))}. O sinal será abatido do valor total. Podemos confirmar as condições da encomenda? Revisa Auto Car.`}
-function changeSpecial(id){let a=read(key.special),d=a.find(x=>x.id===id);if(!d)return;let status=prompt('Novo status: Aguardando sinal, Encomendada, Recebida, Entregue ou Cancelada',d.status);if(!['Aguardando sinal','Encomendada','Recebida','Entregue','Cancelada'].includes(status))return;d.status=status;save(key.special,a);renderSpecial()}
+
+
+
+// ENCOMENDAS: dados reais do Supabase, vinculados ao cadastro do cliente.
+let realEncomendas=[];
+const specialStatusMap={'Aguardando sinal':'aguardando_sinal','Encomendada':'encomendada','Em transporte':'em_transporte','Recebida':'recebida','Pronta para retirada':'pronta_retirada','Entregue':'entregue','Cancelada':'cancelada'};
+const specialStatusLabels=Object.fromEntries(Object.entries(specialStatusMap).map(([k,v])=>[v,k]));
+const specialFeedback=t=>document.getElementById('specialFeedback').textContent=t;
+function loadSpecialClients(){
+ const el=document.getElementById('specialClient');
+ el.innerHTML='<option value="">Selecione o cliente</option>'+serverClients.map(c=>`<option value="${esc(c.cliente_id)}">${esc(c.nome)}${c.cpf?' • '+esc(c.cpf):''}</option>`).join('');
+}
+document.getElementById('specialClient').addEventListener('change',e=>{
+ const c=serverClients.find(x=>x.cliente_id===e.target.value);
+ document.getElementById('specialPhone').value=c?.telefone||'';
+ const v=document.getElementById('specialVehicle');
+ v.innerHTML='<option value="">Selecione o veículo</option>'+serverVehicles.filter(x=>x.cliente_id===e.target.value).map(x=>`<option value="${esc(x.id)}">${esc(x.modelo)} • ${esc(x.placa)}</option>`).join('');
+});
+async function loadSpecialOrders(){
+ const {data,error}=await sb.from('encomendas_pecas').select('*').order('criado_em',{ascending:false});
+ if(error){specialFeedback('Não foi possível carregar encomendas: '+error.message);return;}
+ realEncomendas=data||[];renderSpecial();
+}
+function renderSpecial(){
+ const el=document.getElementById('specialList');
+ el.innerHTML=realEncomendas.length?realEncomendas.map(d=>{
+ const c=serverClients.find(x=>x.cliente_id===d.cliente_id)||{};
+ const v=serverVehicles.find(x=>x.id===d.veiculo_id)||{};
+ return `<div class="card"><div class="row"><strong>${esc(c.nome||'Cliente')} — ${esc(d.nome_peca)}</strong><span class="chip">${esc(specialStatusLabels[d.status]||d.status)}</span></div>
+ <p class="muted">${esc(v.modelo||'')} ${esc(v.placa||'')} • Total: ${money(d.valor_total)} • Sinal: ${money(d.valor_sinal)} • Saldo: ${money(Number(d.valor_total)-Number(d.valor_sinal))}</p>
+ <p>${esc(d.observacoes||'')}</p><label>Atualizar andamento</label><select id="st_${d.id}">${Object.entries(specialStatusMap).map(([label,value])=>`<option value="${value}" ${d.status===value?'selected':''}>${label}</option>`).join('')}</select>
+ <div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn small" type="button" onclick="updateSpecial('${d.id}')">Salvar status e preparar aviso</button><button class="btn alt small" type="button" onclick="sendSpecial('${d.id}')">Avisar pelo WhatsApp</button></div></div>`;
+ }).join(''):'Nenhuma encomenda cadastrada.';
+}
+function specialMessage(d){
+ const c=serverClients.find(x=>x.cliente_id===d.cliente_id)||{};
+ const v=serverVehicles.find(x=>x.id===d.veiculo_id)||{};
+ const stage=specialStatusLabels[d.status]||d.status;
+ const detail={aguardando_sinal:'Estamos aguardando a confirmação do sinal para realizar o pedido.',encomendada:'Sua peça já foi encomendada junto ao fornecedor.',em_transporte:'Sua peça está a caminho da oficina.',recebida:'A peça chegou à oficina. Entraremos em contato sobre os próximos passos.',pronta_retirada:'Sua peça está pronta para retirada, após confirmação do pagamento.',entregue:'Sua peça foi entregue. Agradecemos a confiança!',cancelada:'A encomenda foi cancelada. Entre em contato conosco para esclarecimentos.'}[d.status]||'';
+ return `Olá, ${c.nome||'cliente'}! 🔧\n\nAtualização da encomenda da peça: ${d.nome_peca}${v.placa?' ('+v.placa+')':''}.\n\n*Status: ${stage}*\n${detail}\n\nValor total: ${money(d.valor_total)}\nSinal previsto: ${money(d.valor_sinal)}\n\nRevisa Auto Car – Autopeças e Mecânica.`;
+}
+function sendSpecial(id){
+ const d=realEncomendas.find(x=>x.id===id);if(!d)return;
+ const c=serverClients.find(x=>x.cliente_id===d.cliente_id)||{};
+ const phone=String(c.telefone||'').replace(/\D/g,'');
+ if(!phone){alert('O cliente não possui WhatsApp cadastrado. Atualize o cadastro antes de enviar.');return;}
+ const digits=phone.startsWith('55')?phone:'55'+phone;
+ window.open('https://wa.me/'+digits+'?text='+encodeURIComponent(specialMessage(d)),'_blank','noopener');
+}
+async function updateSpecial(id){
+ const d=realEncomendas.find(x=>x.id===id);if(!d)return;
+ const next=document.getElementById('st_'+id).value;
+ if(next===d.status){sendSpecial(id);return;}
+ if(!confirm('Salvar o novo andamento da peça e preparar a mensagem para o cliente?'))return;
+ const {error}=await sb.from('encomendas_pecas').update({status:next,atualizado_em:new Date().toISOString()}).eq('id',id);
+ if(error){alert('Não foi possível salvar: '+error.message);return;}
+ const {data:auth}=await sb.auth.getUser();
+ const hist=await sb.from('encomendas_historico').insert({encomenda_id:id,status_anterior:d.status,status_novo:next,alterado_por:auth.user.id});
+ if(hist.error)alert('Status salvo, mas o histórico não foi registrado: '+hist.error.message);
+ d.status=next;renderSpecial();specialFeedback('Status atualizado no Supabase. O WhatsApp será aberto para a Leninha enviar a mensagem.');sendSpecial(id);
+}
+document.getElementById('specialForm').onsubmit=async e=>{
+ e.preventDefault();if(!adminReady)return alert('Entre como administradora.');
+ const d=Object.fromEntries(new FormData(e.target).entries());
+ if(Number(d.sinal)>Number(d.total))return alert('O sinal não pode ultrapassar o valor total.');
+ const payload={cliente_id:d.cliente_id,veiculo_id:d.veiculo_id||null,nome_peca:d.peca,valor_total:Number(d.total),valor_sinal:Number(d.sinal),previsao_chegada:d.previsao||null,status:specialStatusMap[d.status]||'aguardando_sinal',observacoes:d.observacoes||null};
+ const {data,error}=await sb.from('encomendas_pecas').insert(payload).select().single();
+ if(error)return alert('Não foi possível salvar no Supabase: '+error.message);
+ const {data:auth}=await sb.auth.getUser();
+ const h=await sb.from('encomendas_historico').insert({encomenda_id:data.id,status_novo:data.status,alterado_por:auth.user.id});
+ if(h.error)alert('Encomenda salva, mas houve erro ao registrar o histórico: '+h.error.message);
+ e.target.reset();document.getElementById('specialVehicle').innerHTML='<option value="">Selecione o veículo</option>';
+ await loadSpecialOrders();specialFeedback('Encomenda salva no Supabase. Se desejar, envie o aviso ao cliente pelo WhatsApp.');
+};
 
 // A consulta real é permitida apenas a usuários autenticados com papel admin.
 const SB_URL='https://dmjhwndbwooyejdtuqut.supabase.co';
@@ -71,12 +183,14 @@ async function loadAdminData(){
  const {data:role,error:roleErr}=await sb.from('perfis').select('papel').eq('id',auth.user.id).maybeSingle();
  if(roleErr)throw Error('Não foi possível verificar as permissões: '+roleErr.message);
  if(role?.papel!=='admin')throw Error('Esta conta não possui acesso administrativo.');
- const [c,v,req]=await Promise.all([
+ const [c,v,req,os,orc,checks,media]=await Promise.all([
    sb.from('clientes').select('id,nome,cpf,telefone,email').order('nome'),
    sb.from('veiculos').select('id,cliente_id,placa,modelo,ano,chassi,quilometragem'),
-   sb.from('solicitacoes').select('id,cliente_id,veiculo_id,descricao,quando_ocorre,luzes_painel,manutencoes_recentes,data_preferida,status,criado_em').order('criado_em',{ascending:false})
+   sb.from('solicitacoes').select('id,cliente_id,veiculo_id,descricao,quando_ocorre,luzes_painel,manutencoes_recentes,data_preferida,status,criado_em').order('criado_em',{ascending:false}),
+   sb.from('ordens_servico').select('*'),sb.from('orcamentos').select('*').order('criado_em',{ascending:false}),sb.from('checklists').select('*'),sb.from('registros_midia').select('*')
  ]);
- for(const r of [c,v,req])if(r.error)throw Error('Erro ao consultar cadastros: '+r.error.message);
+ for(const r of [c,v,req,os,orc,checks,media])if(r.error)throw Error('Erro ao consultar cadastros: '+r.error.message);
+ serverVehicles=v.data||[];serverOrders=os.data||[];serverBudgets=orc.data||[];serverChecks=checks.data||[];serverMedia=media.data||[];
  const byClient=new Map((c.data||[]).map(x=>[x.id,x]));
  const byVehicle=new Map((v.data||[]).map(x=>[x.id,x]));
  serverClients=(c.data||[]).map(x=>{const ve=(v.data||[]).find(y=>y.cliente_id===x.id)||{};return {...x,...ve,cliente_id:x.id,nome:x.nome,cpf:x.cpf,telefone:x.telefone}});
@@ -84,7 +198,10 @@ async function loadAdminData(){
  const select=document.getElementById('msgClient');
  select.innerHTML='<option value="">Selecione um cliente cadastrado</option>'+serverClients.map((c,i)=>`<option value="${i}">${esc(c.nome)}${c.placa?' • '+esc(c.placa):''}</option>`).join('');
  document.getElementById('msgClientStatus').textContent=serverClients.length+' cliente(s) encontrado(s) no Supabase.';
+ loadSpecialClients();await loadSpecialOrders();
  refresh();
+ const bs=document.getElementById('budgetRequest');bs.innerHTML='<option value="">Selecione uma solicitação</option>';
+ bs.innerHTML+=serverRequests.map(r=>`<option value="${esc(r.id)}">${esc(r.nome)} · ${esc(r.placa)} · ${esc(r.status)}</option>`).join('');
 }
 document.getElementById('msgClient').addEventListener('change',e=>{
  const c=serverClients[Number(e.target.value)];
