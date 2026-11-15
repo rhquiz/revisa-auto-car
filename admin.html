@@ -43,6 +43,7 @@ function renderClients(){let q=norm(document.getElementById('clientSearch').valu
 async function deleteSelectedClient(){
  if(!selected||!adminReady||!sb)return alert('Selecione um cliente e entre como administradora.');
  const client={id:selected.cliente_id,nome:selected.nome};
+ if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(client.id||""))return alert("ID do cliente inválido. Atualize a página e selecione o cadastro novamente.");
  const linked=serverRequests.some(x=>x.cliente_id===client.id)||serverOrders.some(x=>x.cliente_id===client.id);
  if(linked)return alert('Este cliente possui solicitações ou ordens de serviço. Para preservar o histórico, a exclusão está bloqueada.');
  if(!confirm('Excluir permanentemente o cadastro de '+client.nome+'? Isso também excluirá a conta de acesso ao site. Esta ação não pode ser desfeita.'))return;
@@ -235,7 +236,7 @@ async function loadAdminData(){
  serverVehicles=v.data||[];serverOrders=os.data||[];serverBudgets=orc.data||[];serverChecks=checks.data||[];serverMedia=media.data||[];
  const byClient=new Map((c.data||[]).map(x=>[x.id,x]));
  const byVehicle=new Map((v.data||[]).map(x=>[x.id,x]));
- serverClients=(c.data||[]).map(x=>{const ve=(v.data||[]).find(y=>y.cliente_id===x.id)||{};return {...x,...ve,cliente_id:x.id,nome:x.nome,cpf:x.cpf,telefone:x.telefone}});
+ serverClients=(c.data||[]).map(x=>{const ve=(v.data||[]).find(y=>y.cliente_id===x.id)||{};return {...ve,...x,id:x.id,cliente_id:x.id,nome:x.nome,cpf:x.cpf,telefone:x.telefone}});
  serverRequests=(req.data||[]).map(x=>{const cl=byClient.get(x.cliente_id)||{};const ve=byVehicle.get(x.veiculo_id)||{};return {...x,nome:cl.nome,cpf:cl.cpf,telefone:cl.telefone,modelo:ve.modelo,placa:ve.placa,ano:ve.ano,chassi:ve.chassi,problema:x.descricao,quando:x.quando_ocorre,luzes:x.luzes_painel,manutencao:x.manutencoes_recentes,data:x.data_preferida,status:x.status}});
  const select=document.getElementById('msgClient');
  select.innerHTML='<option value="">Selecione um cliente cadastrado</option>'+serverClients.map((c,i)=>`<option value="${i}">${esc(c.nome)}${c.placa?' • '+esc(c.placa):''}</option>`).join('');
