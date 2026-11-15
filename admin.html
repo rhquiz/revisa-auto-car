@@ -40,25 +40,42 @@ document.getElementById('pieceForm').onsubmit=async e=>{e.preventDefault();alert
 
 document.getElementById('clientSearch').oninput=renderClients;
 function renderClients(){let q=norm(document.getElementById('clientSearch').value),list=clients().filter(r=>!q||[r.nome,r.cpf,r.placa,r.modelo].some(v=>norm(v).includes(q)));document.getElementById('clientResults').innerHTML=list.length?list.map((r,i)=>`<button class="result" onclick="selectClient(${i})"><strong>${esc(r.nome)}</strong><small>${esc(r.modelo)} • ${esc(r.placa)} • CPF final ${esc(String(r.cpf||'').slice(-3))}</small></button>`).join(''):'<p class="muted">Nenhum cliente cadastrado encontrado.</p>';window.visibleClients=list}
+let deletingClient=false;
 async function deleteSelectedClient(){
- if(!selected||!adminReady||!sb)return alert('Selecione um cliente e entre como administradora.');
- const client={id:selected.cliente_id,nome:selected.nome};
- if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(client.id||""))return alert("ID do cliente inválido. Atualize a página e selecione o cadastro novamente.");
- const linked=serverRequests.some(x=>x.cliente_id===client.id)||serverOrders.some(x=>x.cliente_id===client.id);
- if(linked)return alert('Este cliente possui solicitações ou ordens de serviço. Para preservar o histórico, a exclusão está bloqueada.');
- if(!confirm('Excluir permanentemente o cadastro de '+client.nome+'? Isso também excluirá a conta de acesso ao site. Esta ação não pode ser desfeita.'))return;
+ if(deletingClient)return;
+ if(!selected||!adminReady||!sb)return alert('Selecione um cliente e entre na administração.');
+ const client={id:String(selected.cliente_id||selected.id||'').trim(),nome:selected.nome};
+ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+ if(!uuid.test(client.id))return alert('O cadastro selecionado não tem um ID válido. Atualize a página e selecione novamente.');
+ if(!confirm('Deseja excluir permanentemente o cadastro de '+client.nome+'? Esta ação não pode ser desfeita.'))return;
+ deletingClient=true;
+ const button=document.getElementById('deleteClientButton');
+ if(button){button.disabled=true;button.textContent='Excluindo...';}
  try{
   const {data:{session},error:sessionError}=await sb.auth.getSession();
-  if(sessionError||!session?.access_token)throw Error('Sua sessão expirou. Faça login novamente.');
-  const {data:identity,error:identityError}=await sb.auth.getUser();
-  if(identityError||!identity?.user)throw Error('Não foi possível identificar a conta conectada. Entre novamente.');
-  const response=await fetch(SB_URL+'/functions/v1/excluir-cliente',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({cliente_id:client.id})});
+  if(sessionError||!session?.access_token)throw Error('Sua sessão expirou. Entre novamente.');
+  const response=await fetch(SB_URL+'/functions/v1/excluir-cliente',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+session.access_token},
+   body:JSON.stringify({cliente_id:client.id})
+  });
   const raw=await response.text();
-  let result={};try{result=JSON.parse(raw)}catch{result={detalhe:raw}}
-  if(!response.ok||result.erro||result.error)throw Error('HTTP '+response.status+' — '+(result.erro||result.error||result.message||result.detalhe||'A função recusou a operação')+' (usuário: '+identity.user.email+').');
-  selected=null;document.getElementById('clientDetails').classList.add('hidden');
-  await loadAdminData();alert('Cadastro excluído.');
- }catch(err){alert('Não foi possível excluir: '+(err.message||err));}
+  let result={};try{result=JSON.parse(raw)}catch{result={erro:raw.slice(0,300)}}
+  if(!response.ok||result.erro||result.error){
+   const detail=result.erro||result.error||result.message||'A função recusou a operação';
+   throw Error('HTTP '+response.status+' — '+detail+'\nID enviado: '+client.id);
+  }
+  if(result.sucesso!==true)throw Error('A função não confirmou a exclusão. Verifique os registros antes de tentar novamente.');
+  selected=null;
+  document.getElementById('clientDetails').classList.add('hidden');
+  await loadAdminData();
+  alert('Cadastro excluído com sucesso.');
+ }catch(err){
+  alert('Não foi possível excluir: '+(err.message||err));
+ }finally{
+  deletingClient=false;
+  if(button){button.disabled=false;button.textContent='Excluir cadastro';}
+ }
 }
 function selectClient(i){
  selected=window.visibleClients[i];if(!selected)return;
@@ -68,7 +85,7 @@ function selectClient(i){
  const lines=xs=>xs.length?xs.join(''):'<p class="muted">Nenhum registro ainda.</p>';
  const card=(title,body)=>`<div class="card"><h3>${title}</h3>${body}</div>`;
  document.getElementById('clientDetails').classList.remove('hidden');
- document.getElementById('clientDetails').innerHTML=card('Cadastro completo — '+esc(r.nome),`<div class="row"><button class="btn" onclick="prepareBudget()">Criar orçamento para este cliente</button><button class="btn alt" style="border:1px solid #c66;color:#ffd5d5" onclick="deleteSelectedClient()">Excluir cadastro</button></div><div class="grid">${fields.map(([k,v])=>`<div><div class="muted mini">${k}</div><strong>${esc(v||'Não informado')}</strong></div>`).join('')}</div>`)
+ document.getElementById('clientDetails').innerHTML=card('Cadastro completo — '+esc(r.nome),`<div class="row"><button class="btn" onclick="prepareBudget()">Criar orçamento para este cliente</button><button class="btn alt" style="border:1px solid #c66;color:#ffd5d5" id="deleteClientButton" type="button" onclick="deleteSelectedClient()">Excluir cadastro</button></div><div class="grid">${fields.map(([k,v])=>`<div><div class="muted mini">${k}</div><strong>${esc(v||'Não informado')}</strong></div>`).join('')}</div>`)
  +card('Veículos',lines(allVehicles.map(v=>`<div class="line"><strong>${esc(v.modelo)} · ${esc(v.placa)}</strong><div class="muted mini">Ano: ${esc(v.ano)} · Chassi: ${esc(v.chassi)} · KM: ${esc(v.quilometragem)}</div></div>`)))
  +card('Solicitações e agendamentos',lines(requestsForClient.map(x=>`<div class="line"><strong>${esc(x.status)} · ${esc(x.placa||'')}</strong><p>${esc(x.descricao)}</p><div class="muted mini">Data solicitada: ${esc(x.data_preferida||'Não informada')} · ${esc(x.criado_em||'')}</div></div>`)))
  +card('Ordens de serviço',lines(oss.map(o=>`<div class="line"><strong>OS nº ${esc(o.numero)} · ${esc(o.status)}</strong><p>${esc(o.queixa_cliente||'')}</p><div class="muted mini">${esc(o.observacoes_cliente||'')}</div></div>`)))
