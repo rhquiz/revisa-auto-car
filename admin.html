@@ -46,14 +46,17 @@ async function deleteSelectedClient(){
  const linked=serverRequests.some(x=>x.cliente_id===client.id)||serverOrders.some(x=>x.cliente_id===client.id);
  if(linked)return alert('Este cliente possui solicitações ou ordens de serviço. Para preservar o histórico, a exclusão está bloqueada.');
  if(!confirm('Excluir permanentemente o cadastro de '+client.nome+'? Isso também excluirá a conta de acesso ao site. Esta ação não pode ser desfeita.'))return;
- const check=prompt('Para confirmar, digite EXCLUIR:');
- if(check!=='EXCLUIR')return;
  try{
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session?.access_token)throw Error('Sua sessão expirou. Faça login novamente.');
+  const {data:{session},error:sessionError}=await sb.auth.getSession();
+  if(sessionError||!session?.access_token)throw Error('Sua sessão expirou. Faça login novamente.');
+  const {data:identity,error:identityError}=await sb.auth.getUser();
+  if(identityError||!identity?.user)throw Error('Não foi possível identificar a conta conectada. Entre novamente.');
+  const {data:profile,error:profileError}=await sb.from('perfis').select('papel,ativo').eq('id',identity.user.id).maybeSingle();
+  if(profileError||profile?.papel!=='admin'||profile.ativo===false)throw Error('A conta conectada não possui permissão administrativa ativa.');
   const response=await fetch(SB_URL+'/functions/v1/excluir-cliente',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({cliente_id:client.id})});
-  const result=await response.json().catch(()=>({}));
-  if(!response.ok||result.erro)throw Error(result.erro||'Erro HTTP '+response.status);
+  const raw=await response.text();
+  let result={};try{result=JSON.parse(raw)}catch{result={detalhe:raw}}
+  if(!response.ok||result.erro||result.error)throw Error('HTTP '+response.status+' — '+(result.erro||result.error||result.message||result.detalhe||'A função recusou a operação')+' (usuário: '+identity.user.email+').');
   selected=null;document.getElementById('clientDetails').classList.add('hidden');
   await loadAdminData();alert('Cadastro excluído.');
  }catch(err){alert('Não foi possível excluir: '+(err.message||err));}
