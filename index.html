@@ -45,7 +45,7 @@ async function loadMyBudgets(){
 }
 async function logoutDemo(){await db.auth.signOut();currentUser=null;clientRecord=null;goPage('acesso')}
 (async()=>{const {data}=await db.auth.getUser();currentUser=data.user;if(currentUser){try{await loadClient()}catch(e){console.warn(e)}}db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){currentUser=null;clientRecord=null}})})();
-const goods=[['Óleo de motor','Lubrificação',79.9,'ÓLEO'],['Filtro de óleo','Filtros',35,'FILTRO'],['Pastilha de freio','Freios',129.9,'FREIOS'],['Bateria automotiva','Elétrica',449,'BATERIA'],['Lâmpada automotiva','Iluminação',39.9,'LUZ'],['Filtro de ar','Filtros',59.9,'FILTRO']];
+const goods=[]; // Sem produtos fictícios: catálogo será preenchido pela gestão da Leninha.
 const money=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});let cart={};
 const productCategories=['Todos','Óleos','Filtros','Freios','Elétrica','Iluminação','Outros'];
 function normalizedCategory(category){const c=String(category||'').toLocaleLowerCase('pt-BR');if(c.includes('óleo')||c.includes('oleo')||c.includes('lubrifica'))return 'Óleos';if(c.includes('filtro'))return 'Filtros';if(c.includes('freio'))return 'Freios';if(c.includes('elétr')||c.includes('eletr')||c.includes('bateria'))return 'Elétrica';if(c.includes('ilumina')||c.includes('lâmp')||c.includes('lamp'))return 'Iluminação';return 'Outros'}
